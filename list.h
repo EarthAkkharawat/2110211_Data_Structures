@@ -192,6 +192,157 @@ namespace CP
 				std::cout << " (prev = " << it.ptr->prev << ", I'm at " << it.ptr << ", next = " << it.ptr->next << ")" << std::endl;
 			}
 		}
+
+		//-------------- extra (unlike STL) ------------------
+		void reorder(int pos, std::vector<int> selected)
+		{
+			auto i = begin();
+			int c = 0;
+			for (int e = 0; e < pos; ++e)
+				++i;
+			auto t = begin();
+			for (auto &x : selected)
+			{
+				while (c < x)
+				{
+					++t;
+					++c;
+				}
+				insert(i, *t);
+				auto tem = t;
+				++t;
+				++c;
+				erase(tem);
+			}
+		}
+
+		void extract(const T &value, iterator a, iterator b, CP::list<T> &output)
+		{
+			for (auto it = a; it != b; ++it)
+			{
+				if (*it == value)
+				{
+					node *tem = new node();
+					tem->next = output.mHeader->next;
+					output.mHeader->next->prev = tem;
+					output.mHeader->next = tem;
+					tem->prev = output.mHeader;
+					tem->data = value;
+					++output.mSize;
+					it.ptr->prev->next = it.ptr->next;
+					it.ptr->next->prev = it.ptr->prev;
+					delete it.ptr;
+					--mSize;
+				}
+			}
+		}
+
+		CP::list<T>::iterator reverse(iterator a, iterator b)
+		{
+			if (mSize == 0 || a == b)
+				return a;
+			auto ait = a, bit = b;
+			--bit;
+			while (ait != bit)
+			{
+				swap(*ait, *bit);
+				++ait;
+				if (ait == bit)
+					break;
+				--bit;
+			}
+			return a;
+		}
+
+		void shift_left()
+		{
+			mHeader->prev->next = mHeader->next;
+			mHeader->next->prev = mHeader->prev;
+			mHeader->next->next->prev = mHeader;
+			mHeader->prev = mHeader->next;
+			mHeader->next = mHeader->next->next;
+			mHeader->prev->next = mHeader;
+		}
+
+		void splitList(CP::list<T> &list1, CP::list<T> &list2)
+		{
+			if (mSize == 0)
+				return;
+			int n = (mSize + 1) / 2;
+			auto it = begin();
+			for (int i = 0; i < n - 1; ++i)
+			{
+				++it;
+			}
+			auto at = it.ptr->next;
+			list1.mHeader->prev->next = mHeader->next;
+			mHeader->next->prev = list1.mHeader->prev;
+			list1.mHeader->prev = it.ptr;
+			it.ptr->next = list1.mHeader;
+			list2.mHeader->prev->next = at;
+			at->prev = list2.mHeader->prev;
+			list2.mHeader->prev = mHeader->prev;
+			mHeader->prev->next = list2.mHeader;
+			mHeader->prev = mHeader;
+			mHeader->next = mHeader;
+			list1.mSize += n;
+			list2.mSize += mSize - n;
+			mSize = 0;
+		}
+
+		void remove_all(const T &value)
+		{
+			for (auto it = begin(); it != end(); ++it)
+			{
+				if (*it == value)
+				{
+					it.ptr->prev->next = it.ptr->next;
+					it.ptr->next->prev = it.ptr->prev;
+					delete it.ptr;
+					--mSize;
+				}
+			}
+		}
+
+		CP::list<T> CP::list<T>::split(iterator it, size_t pos)
+		{
+			CP::list<T> result;
+			if (it == end())
+			{
+				return result;
+			}
+			else
+			{
+				result.mHeader->next = it.ptr;
+				result.mHeader->prev = mHeader->prev;
+				mHeader->prev->next = result.mHeader;
+				it.ptr->prev->next = mHeader;
+				mHeader->prev = it.ptr->prev;
+				it.ptr->prev = result.mHeader;
+				result.mSize = mSize - pos;
+				mSize = pos;
+			}
+			return result;
+		}
+
+		void shift(int k)
+		{
+			int s = mSize;
+			k = k % s;
+			if (k < 0)
+				k = (s + k) % s;
+			auto n = mHeader->next;
+			for (int i = 0; i < k; ++i)
+			{
+				n = n->next;
+			}
+			mHeader->next->prev = mHeader->prev;
+			mHeader->prev->next = mHeader->next;
+			mHeader->next = n;
+			mHeader->prev = n->prev;
+			n->prev->next = mHeader;
+			n->prev = mHeader;
+		}
 	};
 
 }

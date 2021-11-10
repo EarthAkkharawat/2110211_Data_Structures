@@ -109,6 +109,82 @@ namespace CP
 				throw std::out_of_range("index of out range");
 			mSize--;
 		}
+
+		//-------------- extra (unlike STL) ------------------
+		int compare_reserve(const CP::stack<T> &other) const
+		{
+			if (mCap - mSize == other.mCap - other.mSize)
+				return 0;
+			else if (mCap - mSize < other.mCap - other.mSize)
+				return -1;
+			return 1;
+		}
+
+		void deep_push(size_t pos, const T &value)
+		{
+			ensureCapacity(mSize + 1);
+			if (pos > mSize)
+				pos = mSize;
+			int idx = mSize - pos;
+			for (int i = mSize; i > idx; --i)
+			{
+				mData[i] = mData[i - 1];
+			}
+			mData[idx] = value;
+			++mSize;
+		}
+
+		void multi_pop(size_t K)
+		{
+			if (K > mSize)
+			{
+				mSize = 0;
+			}
+			else
+			{
+				mSize -= K;
+			}
+		}
+
+		std::stack<T> remove_top(size_t K)
+		{
+			if (K > mSize)
+			{
+				K = mSize;
+			}
+			T *arre = new T[K]();
+			int e = 0;
+			std::stack<T> s;
+			for (int i = mSize - K; i < mSize; ++i)
+			{
+				arre[e++] = mData[i];
+			}
+			multi_pop(K);
+			for (int i = 0; i < K; ++i)
+			{
+				s.push(arre[i]);
+			}
+			delete[] arre;
+			return s;
+		}
+
+		stack(std::set<T>::iterator first, std::set<T>::iterator last)
+		{
+			int i = 0;
+			int c = 0;
+			for (auto it = first; it != last; ++it)
+			{
+				c += 1;
+			}
+			mData = new T[c]();
+			int e = c - 1;
+			for (auto it = first; it != last; ++it)
+			{
+				mData[e--] = *it;
+			}
+			mSize = c;
+			mCap = c;
+		}
 	};
 
 }
