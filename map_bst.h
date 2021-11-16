@@ -25,7 +25,7 @@ namespace CP
 			node *right;
 			node *parent;
 
-			node() : data(ValueT()), left(NULL), right(NULL), parent(NULL) {}
+			node() : data(ValueT()), left(nullptr), right(nullptr), parent(nullptr) {}
 
 			node(const ValueT &data, node *left, node *right, node *parent) : data(data), left(left), right(right), parent(parent) {}
 		};
@@ -37,16 +37,16 @@ namespace CP
 			node *ptr;
 
 		public:
-			tree_iterator() : ptr(NULL) {}
+			tree_iterator() : ptr(nullptr) {}
 
 			tree_iterator(node *a) : ptr(a) {}
 
 			tree_iterator &operator++()
 			{
-				if (ptr->right == NULL)
+				if (ptr->right == nullptr)
 				{
 					node *parent = ptr->parent;
-					while (parent != NULL && parent->right == ptr)
+					while (parent != nullptr && parent->right == ptr)
 					{
 						ptr = parent;
 						parent = ptr->parent;
@@ -56,7 +56,7 @@ namespace CP
 				else
 				{
 					ptr = ptr->right;
-					while (ptr->left != NULL)
+					while (ptr->left != nullptr)
 						ptr = ptr->left;
 				}
 				return (*this);
@@ -64,10 +64,10 @@ namespace CP
 
 			tree_iterator &operator--()
 			{
-				if (ptr->left == NULL)
+				if (ptr->left == nullptr)
 				{
 					node *parent = ptr->parent;
-					while (parent != NULL && parent->left == ptr)
+					while (parent != nullptr && parent->left == ptr)
 					{
 						ptr = parent;
 						parent = ptr->parent;
@@ -77,7 +77,7 @@ namespace CP
 				else
 				{
 					ptr = ptr->left;
-					while (ptr->right != NULL)
+					while (ptr->right != nullptr)
 						ptr = ptr->right;
 				}
 				return (*this);
@@ -114,7 +114,7 @@ namespace CP
 	protected:
 		node *&child_link(node *parent, const KeyT &k)
 		{
-			if (parent == NULL)
+			if (parent == nullptr)
 				return mRoot;
 			return mLess(k, parent->data.first) ? parent->left : parent->right;
 		}
@@ -129,7 +129,7 @@ namespace CP
 		node *find_node(const KeyT &k, node *r, node *&parent)
 		{
 			node *ptr = r;
-			while (ptr != NULL)
+			while (ptr != nullptr)
 			{
 				int cmp = compare(k, ptr->data.first);
 				if (cmp == 0)
@@ -137,14 +137,14 @@ namespace CP
 				parent = ptr;
 				ptr = cmp < 0 ? ptr->left : ptr->right;
 			}
-			return NULL;
+			return nullptr;
 		}
 
 		node *find_min_node(node *r)
 		{
-			// r must not be NULL
+			// r must not be nullptr
 			node *min = r;
-			while (min->left != NULL)
+			while (min->left != nullptr)
 			{
 				min = min->left;
 			}
@@ -153,9 +153,9 @@ namespace CP
 
 		node *find_max_node(node *r)
 		{
-			// r must not be NULL
+			// r must not be nullptr
 			node *max = r;
-			while (max->right != NULL)
+			while (max->right != nullptr)
 			{
 				max = max->right;
 			}
@@ -164,8 +164,8 @@ namespace CP
 
 		node *copy(node *src, node *parent)
 		{
-			if (src == NULL)
-				return NULL;
+			if (src == nullptr)
+				return nullptr;
 			node *tmp = new node();
 			tmp->data = src->data;
 			tmp->left = copy(src->left, tmp);
@@ -175,7 +175,7 @@ namespace CP
 		}
 		void delete_all_nodes(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return;
 			delete_all_nodes(r->left);
 			delete_all_nodes(r->right);
@@ -188,11 +188,11 @@ namespace CP
 		// copy constructor
 		map_bst(const map_bst<KeyT, MappedT, CompareT> &other) : mLess(other.mLess), mSize(other.mSize)
 		{
-			mRoot = copy(other.mRoot, NULL);
+			mRoot = copy(other.mRoot, nullptr);
 		}
 
 		// default constructor
-		map_bst(const CompareT &c = CompareT()) : mRoot(NULL), mLess(c), mSize(0)
+		map_bst(const CompareT &c = CompareT()) : mRoot(nullptr), mLess(c), mSize(0)
 		{
 		}
 
@@ -227,29 +227,29 @@ namespace CP
 		//----------------- iterator ---------------
 		iterator begin()
 		{
-			return iterator(mRoot == NULL ? NULL : find_min_node(mRoot));
+			return iterator(mRoot == nullptr ? nullptr : find_min_node(mRoot));
 		}
 
 		iterator end()
 		{
-			return iterator(NULL);
+			return iterator(nullptr);
 		}
 
 		//----------------- modifier -------------
 		void clear()
 		{
 			delete_all_nodes(mRoot);
-			mRoot = NULL;
+			mRoot = nullptr;
 			mSize = 0;
 		}
 
 		MappedT &operator[](const KeyT &key)
 		{
-			node *parent = NULL;
+			node *parent = nullptr;
 			node *ptr = find_node(key, mRoot, parent);
-			if (ptr == NULL)
+			if (ptr == nullptr)
 			{
-				ptr = new node(std::make_pair(key, MappedT()), NULL, NULL, parent);
+				ptr = new node(std::make_pair(key, MappedT()), nullptr, nullptr, parent);
 				child_link(parent, key) = ptr;
 				mSize++;
 			}
@@ -258,12 +258,12 @@ namespace CP
 
 		std::pair<iterator, bool> insert(const ValueT &val)
 		{
-			node *parent = NULL;
+			node *parent = nullptr;
 			node *ptr = find_node(val.first, mRoot, parent);
-			bool not_found = (ptr == NULL);
+			bool not_found = (ptr == nullptr);
 			if (not_found)
 			{
-				ptr = new node(val, NULL, NULL, parent);
+				ptr = new node(val, nullptr, nullptr, parent);
 				child_link(parent, val.first) = ptr;
 				mSize++;
 			}
@@ -274,25 +274,25 @@ namespace CP
 		{
 			node *parent;
 			node *ptr = find_node(key, mRoot, parent);
-			return ptr == NULL ? end() : iterator(ptr);
+			return ptr == nullptr ? end() : iterator(ptr);
 		}
 
 		size_t erase(const KeyT &key)
 		{
-			if (mRoot == NULL)
+			if (mRoot == nullptr)
 				return 0;
 
-			node *parent = NULL;
+			node *parent = nullptr;
 			node *ptr = find_node(key, mRoot, parent);
-			if (ptr == NULL)
+			if (ptr == nullptr)
 				return 0;
-			if (ptr->left != NULL && ptr->right != NULL)
+			if (ptr->left != nullptr && ptr->right != nullptr)
 			{
 				// have two children
 				node *min = find_min_node(ptr->right);
 				node *&link = child_link(min->parent, min->data.first);
-				link = (min->left == NULL) ? min->right : min->left;
-				if (link != NULL)
+				link = (min->left == nullptr) ? min->right : min->left;
+				if (link != nullptr)
 					link->parent = min->parent;
 				std::swap(ptr->data.first, min->data.first);
 				std::swap(ptr->data.second, min->data.second);
@@ -301,8 +301,8 @@ namespace CP
 			else
 			{
 				node *&link = child_link(ptr->parent, key);
-				link = (ptr->left == NULL) ? ptr->right : ptr->left;
-				if (link != NULL)
+				link = (ptr->left == nullptr) ? ptr->right : ptr->left;
+				if (link != nullptr)
 					link->parent = ptr->parent;
 			}
 			delete ptr;
@@ -312,11 +312,11 @@ namespace CP
 
 		void print_node(node *n, size_t depth)
 		{
-			if (n != NULL)
+			if (n != nullptr)
 			{
-				if (n->right != NULL && n->right->parent != n)
+				if (n->right != nullptr && n->right->parent != n)
 					std::cout << "parent of " << n->right->data.first << std::endl;
-				if (n->left != NULL && n->left->parent != n)
+				if (n->left != nullptr && n->left->parent != n)
 					std::cout << "parent of " << n->left->data.first << std::endl;
 				print_node(n->right, depth + 1);
 				for (size_t i = 0; i < depth; i++)
@@ -337,11 +337,11 @@ namespace CP
 		}
 		bool checkParent(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return true;
-			if (r->left != NULL && r != r->left->parent)
+			if (r->left != nullptr && r != r->left->parent)
 				return false;
-			if (r->right != NULL && r != r->right->parent)
+			if (r->right != nullptr && r != r->right->parent)
 				return false;
 			if (!checkParent(r->left))
 				return false;
@@ -353,15 +353,134 @@ namespace CP
 		}
 		bool checkInorder(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return true;
-			if (r->left != NULL && !mLess(r->left->data.first, r->data.first))
+			if (r->left != nullptr && !mLess(r->left->data.first, r->data.first))
 				return false;
-			if (r->right != NULL && !mLess(r->data.first, r->right->data.first))
+			if (r->right != nullptr && !mLess(r->data.first, r->right->data.first))
 				return false;
 			if (!checkInorder(r->left))
 				return false;
 			return checkInorder(r->right);
+		}
+
+		//-------------- extra (unlike STL) ------------------
+
+		//---------- tree traversal ----------
+		void print_key_preorder(node *r)
+		{
+			if (r == nullptr)
+				return;
+			std::cout << r->data.first << " ";
+			print_key_preorder(r->left);
+			print_key_preorder(r->right);
+		}
+
+		void print_key_inorder(node *r)
+		{
+			if (r == nullptr)
+				return;
+			print_key_inorder(r->left);
+			std::cout << r->data.first << " ";
+			print_key_inorder(r->right);
+		}
+
+		void print_key_postorder(node *r)
+		{
+			if (r == nullptr)
+				return;
+			print_key_postorder(r->left);
+			print_key_postorder(r->right);
+			std::cout << r->data.first << " ";
+		}
+		//------------------------------------
+
+		int shallowest_leaf()
+		{
+			if (mRoot == nullptr)
+				return -1;
+			if (mSize == 1)
+				return 0;
+			return shallowest_leaf(mRoot);
+		}
+
+		size_t leaves_count(node *n)
+		{
+			int val = 0;
+			if (n == nullptr)
+				return 0;
+			if (n->left == nullptr && n->right == nullptr)
+				val = 1;
+			return val + leaves_count(n->left) + leaves_count(n->right);
+		}
+
+		size_t leaves_count()
+		{
+			return leaves_count(mRoot);
+		}
+
+		int get_max_height(node *n)
+		{
+			if (n == nullptr)
+				return -1;
+			return 1 + std::max(get_max_height(n->left), get_max_height(n->right));
+		}
+
+		void recur(node *n, int &max, node *&ans)
+		{
+			if (n == nullptr)
+				return;
+			recur(n->right, max, ans);
+			int diff = abs(get_max_height(n->left) - get_max_height(n->right));
+			if (diff >= max)
+			{
+				max = diff;
+				ans = n;
+			}
+			recur(n->left, max, ans);
+		}
+
+		KeyT getValueOfMostImbalanceNode()
+		{
+			if (mSize == 1)
+				return mRoot->data.first;
+			int a = abs(get_max_height(mRoot->left) - get_max_height(mRoot->right));
+			node *ans = mRoot;
+			recur(mRoot, a, ans);
+			return ans->data.first;
+		}
+
+		void gen_best_bst(int n, CP::map_bst<int, int> &bst)
+		{
+			int mid = n / 2 + 1;
+			bst[mid] = 0;
+			while (mid > 1)
+			{
+				for (int i = mid / 2; i <= n; i += mid)
+				{
+					bst.insert({i, 0});
+				}
+				mid /= 2;
+			}
+		}
+
+		size_t process(node *ptr) const
+		{
+			if (ptr == nullptr)
+				return 0;
+			if (ptr->left != nullptr && ptr->right != nullptr)
+				return process(ptr->left) + process(ptr->right);
+			if (ptr->left == nullptr && ptr->right == nullptr)
+				return 0;
+			if (ptr->left == nullptr)
+				return 1 + process(ptr->right);
+			if (ptr->right == nullptr)
+				return 1 + process(ptr->left);
+		}
+
+		size_t count_unary() const
+		{
+			return process(mRoot);
 		}
 	};
 

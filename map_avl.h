@@ -27,7 +27,7 @@ namespace CP
 			node *parent;
 			int height;
 
-			node() : data(ValueT()), left(NULL), right(NULL), parent(NULL), height(0) {}
+			node() : data(ValueT()), left(nullptr), right(nullptr), parent(nullptr), height(0) {}
 
 			node(const ValueT &data, node *left, node *right, node *parent) : data(data), left(left), right(right), parent(parent)
 			{
@@ -36,7 +36,7 @@ namespace CP
 
 			int get_height(node *n)
 			{ // äÁè OO ?
-				return (n == NULL ? -1 : n->height);
+				return (n == nullptr ? -1 : n->height);
 			}
 			void set_height()
 			{
@@ -51,13 +51,13 @@ namespace CP
 			void set_left(node *n)
 			{
 				this->left = n;
-				if (n != NULL)
+				if (n != nullptr)
 					this->left->parent = this;
 			}
 			void set_right(node *n)
 			{
 				this->right = n;
-				if (n != NULL)
+				if (n != nullptr)
 					this->right->parent = this;
 			}
 		};
@@ -69,16 +69,16 @@ namespace CP
 			node *ptr;
 
 		public:
-			tree_iterator() : ptr(NULL) {}
+			tree_iterator() : ptr(nullptr) {}
 
 			tree_iterator(node *a) : ptr(a) {}
 
 			tree_iterator &operator++()
 			{
-				if (ptr->right == NULL)
+				if (ptr->right == nullptr)
 				{
 					node *parent = ptr->parent;
-					while (parent != NULL && parent->right == ptr)
+					while (parent != nullptr && parent->right == ptr)
 					{
 						ptr = parent;
 						parent = ptr->parent;
@@ -88,7 +88,7 @@ namespace CP
 				else
 				{
 					ptr = ptr->right;
-					while (ptr->left != NULL)
+					while (ptr->left != nullptr)
 						ptr = ptr->left;
 				}
 				return (*this);
@@ -96,10 +96,10 @@ namespace CP
 
 			tree_iterator &operator--()
 			{
-				if (ptr->left == NULL)
+				if (ptr->left == nullptr)
 				{
 					node *parent = ptr->parent;
-					while (parent != NULL && parent->left == ptr)
+					while (parent != nullptr && parent->left == ptr)
 					{
 						ptr = parent;
 						parent = ptr->parent;
@@ -109,7 +109,7 @@ namespace CP
 				else
 				{
 					ptr = ptr->left;
-					while (ptr->right != NULL)
+					while (ptr->right != nullptr)
 						ptr = ptr->right;
 				}
 				return (*this);
@@ -154,8 +154,8 @@ namespace CP
 		}
 		node *find_node(const KeyT &key, node *r, node *&parent)
 		{
-			if (r == NULL)
-				return NULL;
+			if (r == nullptr)
+				return nullptr;
 			int cmp = compare(key, r->data.first);
 			if (cmp == 0)
 				return r;
@@ -164,9 +164,9 @@ namespace CP
 		}
 		node *find_min_node(node *r)
 		{
-			// r must not be NULL
+			// r must not be nullptr
 			node *min = r;
-			while (min->left != NULL)
+			while (min->left != nullptr)
 			{
 				min = min->left;
 			}
@@ -174,9 +174,9 @@ namespace CP
 		}
 		node *find_max_node(node *r)
 		{
-			// r must not be NULL
+			// r must not be nullptr
 			node *max = r;
-			while (max->right != NULL)
+			while (max->right != nullptr)
 			{
 				max = max->right;
 			}
@@ -184,8 +184,8 @@ namespace CP
 		}
 		node *copy(node *src, node *parent)
 		{
-			if (src == NULL)
-				return NULL;
+			if (src == nullptr)
+				return nullptr;
 			node *tmp = new node();
 			tmp->data = src->data;
 			tmp->left = copy(src->left, tmp);
@@ -195,7 +195,7 @@ namespace CP
 		}
 		void delete_all_nodes(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return;
 			delete_all_nodes(r->left);
 			delete_all_nodes(r->right);
@@ -221,7 +221,7 @@ namespace CP
 		}
 		node *rebalance(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return r;
 			int balance = r->balance_value();
 			if (balance == -2)
@@ -245,10 +245,10 @@ namespace CP
 		}
 		node *insert(const ValueT &val, node *r, node *&ptr)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 			{
 				mSize++;
-				ptr = r = new node(val, NULL, NULL, NULL);
+				ptr = r = new node(val, nullptr, nullptr, nullptr);
 			}
 			else
 			{
@@ -269,8 +269,8 @@ namespace CP
 		}
 		node *erase(const KeyT &key, node *r)
 		{
-			if (r == NULL)
-				return NULL;
+			if (r == nullptr)
+				return nullptr;
 			int cmp = compare(key, r->data.first);
 			if (cmp < 0)
 			{
@@ -282,17 +282,17 @@ namespace CP
 			}
 			else
 			{
-				if (r->left == NULL || r->right == NULL)
+				if (r->left == nullptr || r->right == nullptr)
 				{
 					node *n = r;
-					r = (r->left == NULL ? r->right : r->left);
+					r = (r->left == nullptr ? r->right : r->left);
 					delete n;
 					mSize--;
 				}
 				else
 				{
 					node *m = r->right;
-					while (m->left != NULL)
+					while (m->left != nullptr)
 						m = m->left;
 					std::swap(r->data.first, m->data.first);
 					std::swap(r->data.second, m->data.second);
@@ -309,11 +309,11 @@ namespace CP
 		// copy constructor
 		map_avl(const map_avl<KeyT, MappedT, CompareT> &other) : mLess(other.mLess), mSize(other.mSize)
 		{
-			mRoot = copy(other.mRoot, NULL);
+			mRoot = copy(other.mRoot, nullptr);
 		}
 
 		// default constructor
-		map_avl(const CompareT &c = CompareT()) : mRoot(NULL), mLess(c), mSize(0)
+		map_avl(const CompareT &c = CompareT()) : mRoot(nullptr), mLess(c), mSize(0)
 		{
 		}
 
@@ -346,25 +346,25 @@ namespace CP
 
 		iterator begin()
 		{
-			return iterator(mRoot == NULL ? NULL : find_min_node(mRoot));
+			return iterator(mRoot == nullptr ? nullptr : find_min_node(mRoot));
 		}
 
 		iterator end()
 		{
-			return iterator(NULL);
+			return iterator(nullptr);
 		}
 
 		iterator find(const KeyT &key)
 		{
-			node *parent = NULL;
+			node *parent = nullptr;
 			node *ptr = find_node(key, mRoot, parent);
-			return ptr == NULL ? end() : iterator(ptr);
+			return ptr == nullptr ? end() : iterator(ptr);
 		}
 
 		void clear()
 		{
 			delete_all_nodes(mRoot);
-			mRoot = NULL;
+			mRoot = nullptr;
 			mSize = 0;
 		}
 
@@ -376,10 +376,10 @@ namespace CP
 
 		std::pair<iterator, bool> insert(const ValueT &val)
 		{
-			node *ptr = NULL;
+			node *ptr = nullptr;
 			size_t s = mSize;
 			mRoot = insert(val, mRoot, ptr);
-			mRoot->parent = NULL;
+			mRoot->parent = nullptr;
 			return std::make_pair(iterator(ptr), (mSize > s));
 		}
 
@@ -392,11 +392,11 @@ namespace CP
 		//----------------------------------------------------------------
 		void print_node(node *n, size_t depth)
 		{
-			if (n != NULL)
+			if (n != nullptr)
 			{
-				if (n->right != NULL && n->right->parent != n)
+				if (n->right != nullptr && n->right->parent != n)
 					std::cout << "parent of " << n->right->data.first << std::endl;
-				if (n->left != NULL && n->left->parent != n)
+				if (n->left != nullptr && n->left->parent != n)
 					std::cout << "parent of " << n->left->data.first << std::endl;
 				print_node(n->right, depth + 1);
 				for (size_t i = 0; i < depth; i++)
@@ -417,11 +417,11 @@ namespace CP
 		}
 		bool checkParent(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return true;
-			if (r->left != NULL && r != r->left->parent)
+			if (r->left != nullptr && r != r->left->parent)
 				return false;
-			if (r->right != NULL && r != r->right->parent)
+			if (r->right != nullptr && r != r->right->parent)
 				return false;
 			if (!checkParent(r->left))
 				return false;
@@ -433,11 +433,11 @@ namespace CP
 		}
 		bool checkInorder(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return true;
-			if (r->left != NULL && !mLess(r->left->data.first, r->data.first))
+			if (r->left != nullptr && !mLess(r->left->data.first, r->data.first))
 				return false;
-			if (r->right != NULL && !mLess(r->data.first, r->right->data.first))
+			if (r->right != nullptr && !mLess(r->data.first, r->right->data.first))
 				return false;
 			if (!checkInorder(r->left))
 				return false;
@@ -445,7 +445,7 @@ namespace CP
 		}
 		int height(node *r)
 		{
-			if (r == NULL)
+			if (r == nullptr)
 				return -1;
 			int hl = height(r->left);
 			int hr = height(r->right);
@@ -453,7 +453,7 @@ namespace CP
 		}
 		int height()
 		{
-			if (mRoot == NULL)
+			if (mRoot == nullptr)
 				return -1;
 			assert(height(mRoot) == mRoot->height);
 			return mRoot->height;

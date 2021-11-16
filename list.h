@@ -34,7 +34,7 @@ namespace CP
 			node *ptr;
 
 		public:
-			list_iterator() : ptr(NULL) {}
+			list_iterator() : ptr(nullptr) {}
 
 			list_iterator(node *a) : ptr(a) {}
 
@@ -304,7 +304,7 @@ namespace CP
 			}
 		}
 
-		CP::list<T> CP::list<T>::split(iterator it, size_t pos)
+		CP::list<T> split(iterator it, size_t pos)
 		{
 			CP::list<T> result;
 			if (it == end())

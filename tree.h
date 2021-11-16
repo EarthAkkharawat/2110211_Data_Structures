@@ -10,8 +10,8 @@ class Tree
         Node()
         {
             data = -1;
-            left = NULL;
-            right = NULL;
+            left = nullptr;
+            right = nullptr;
         }
         Node(const int x, Node *left, Node *right) : data(x), left(left), right(right) {}
 
@@ -24,7 +24,7 @@ class Tree
 public:
     Tree()
     {
-        mRoot = NULL;
+        mRoot = nullptr;
         mSize = 0;
     }
 
@@ -53,15 +53,15 @@ public:
         Node *n = t.mRoot;
         return check(mRoot, n);
     }
-    bool check(Node *th, Node *t)
+    bool check(Node *self, Node *t)
     {
-        if (th == NULL && th == NULL)
+        if (self == nullptr && self == nullptr)
             return true;
-        if (th == NULL || t == NULL)
+        if (self == nullptr || t == nullptr)
             return false;
-        if (th->data != t->data)
+        if (self->data != t->data)
             return false;
-        return check(th->left, t->left) && check(th->right, t->right);
+        return check(self->left, t->left) && check(self->right, t->right);
     }
 
 protected:
@@ -69,7 +69,7 @@ protected:
     {
         if (!r)
         {
-            r = new Node(x, NULL, NULL);
+            r = new Node(x, nullptr, nullptr);
             mSize++;
             return;
         }
