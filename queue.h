@@ -121,6 +121,7 @@ namespace CP
 				mFront = (mFront - 1 + mCap) % mCap;
 				mData[mFront] = tem;
 			}
+		}
 
 		void move_to_back(size_t pos)
 		{
@@ -270,6 +271,17 @@ namespace CP
 			mSize = cap;
 			mFront = 0;
 			mCap = cap;
+		}
+
+		void reverse(int a, int b)
+		{
+			int d = (b - a) / 2;
+			int e = 0;
+			for (int i = a; i <= a + d; ++i)
+			{
+				std::swap(mData[(mFront + i) % mCap], mData[(mFront + b - e) % mCap]);
+				++e;
+			}
 		}
 	};
 }

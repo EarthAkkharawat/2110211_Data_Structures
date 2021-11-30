@@ -482,6 +482,40 @@ namespace CP
 		{
 			return process(mRoot);
 		}
+
+		size_t process(node *n)
+		{
+			if (n == NULL)
+				return 0;
+			return 1 + process(n->left) + process(n->right);
+		}
+
+		std::pair<KeyT, MappedT> subtree(map_bst<KeyT, MappedT, CompareT> &left, map_bst<KeyT, MappedT, CompareT> &right)
+		{
+			if (mRoot == nullptr)
+				return std::pair<KeyT, MappedT>();
+			if (mSize == 1)
+				return mRoot->data;
+			left.clear();
+			right.clear();
+
+			if (mRoot->left != nullptr)
+			{
+				left.mRoot = mRoot->left;
+				mRoot->left->parent = nullptr;
+				mRoot->left = nullptr;
+				left.mSize = process(left.mRoot);
+			}
+			if (mRoot->right != nullptr)
+			{
+				right.mRoot = mRoot->right;
+				mRoot->right->parent = nullptr;
+				mRoot->right = nullptr;
+				right.mSize = process(right.mRoot);
+			}
+			mSize = 1;
+			return mRoot->data;
+		}
 	};
 
 }

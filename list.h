@@ -343,6 +343,24 @@ namespace CP
 			n->prev->next = mHeader;
 			n->prev = mHeader;
 		}
+
+		void merge(CP::list<CP::list<T>> &ls)
+		{
+			for (auto &x : ls)
+			{
+				mHeader->prev->next = x.mHeader->next;
+				x.mHeader->next->prev = mHeader->prev;
+				mHeader->prev = x.mHeader->prev;
+				x.mHeader->prev->next = mHeader;
+
+				mSize += x.mSize;
+				x.mSize = 0;
+
+				x.mHeader->next = x.mHeader;
+				x.mHeader->prev = x.mHeader;
+			}
+			// std::cout<<'\n'<<ls.size();
+		}
 	};
 
 }

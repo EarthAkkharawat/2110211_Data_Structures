@@ -55,7 +55,7 @@ public:
     }
     bool check(Node *self, Node *t)
     {
-        if (self == nullptr && self == nullptr)
+        if (self == nullptr && t == nullptr)
             return true;
         if (self == nullptr || t == nullptr)
             return false;

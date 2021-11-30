@@ -162,133 +162,143 @@ namespace CP
 				fixDown(i);
 			}
 
-		int height() const
-		{
-			if (this->mSize == 0)
-				return -1;
-			return (int)log2(this->mSize);
-		}
-
-		bool find(T k) const
-		{
-			for (int i = 0; i < mSize; ++i)
+			int height() const
 			{
-				if (mData[i] == k)
+				if (this->mSize == 0)
+					return -1;
+				return (int)log2(this->mSize);
+			}
+
+			bool find(T k) const
+			{
+				for (int i = 0; i < mSize; ++i)
 				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		int find_level(T k) const
-		{
-			if (!find(k))
-				return -1;
-			int pos;
-			for (int i = 0; i < mSize; ++i)
-			{
-				if (mData[i] == k)
-				{
-					pos = i;
-				}
-			}
-			return (int)log2(pos + 1);
-		}
-
-		bool operator==(const CP::priority_queue<T, Comp> &other) const
-		{
-			if (mSize != other.mSize)
-				return false;
-			CP::priority_queue<T, Comp> pq1 = *this;
-			CP::priority_queue<T, Comp> pq2 = other;
-			while (pq1.empty() == false)
-			{
-				if (pq1.top() != pq2.top())
-					return false;
-				pq1.pop();
-				pq2.pop();
-			}
-			return true;
-		}
-
-		void K_AryfixUp(size_t idx)
-		{
-			T tem = mData[idx];
-			int c;
-			while (idx > 0)
-			{
-				c = (idx - 1) / 4;
-				if (mLess(mData[c], tem))
-					mData[idx] = mData[c];
-				else
-					break;
-				idx = c;
-			}
-			mData[idx] = tem;
-		}
-
-		void K_AryfixDown(size_t idx)
-		{
-			T tem = mData[idx];
-			int c;
-			while ((c = (idx * 4) + 1) < mSize)
-			{
-				int p = 0;
-				for (int i = 1; i <= 3; ++i)
-				{
-					if (c + i < mSize)
+					if (mData[i] == k)
 					{
-						if (mLess(mData[c + p], mData[c + i]))
-						{
-							p = i;
-						}
+						return true;
 					}
 				}
-				if (c + p < mSize && mLess(tem, mData[c + p]))
+				return false;
+			}
+
+			int find_level(T k) const
+			{
+				if (!find(k))
+					return -1;
+				int pos;
+				for (int i = 0; i < mSize; ++i)
 				{
-					mData[idx] = mData[c + p];
+					if (mData[i] == k)
+					{
+						pos = i;
+					}
 				}
-				else
-					break;
-				idx = c + p;
+				return (int)log2(pos + 1);
 			}
-			mData[idx] = tem;
-		}
 
-		void change_value(size_t pos, const T &value)
-		{
-			mData[pos] = value;
-			fixUp(pos);
-			fixDown(pos);
-		}
-
-		size_t get_rank(size_t pos) const
-		{
-			int c = 0;
-			T a = mData[pos];
-			for (int i = 0; i < mSize; ++i)
+			bool operator==(const CP::priority_queue<T, Comp> &other) const
 			{
-				if (mLess(a, mData[i]))
-					++c;
+				if (mSize != other.mSize)
+					return false;
+				CP::priority_queue<T, Comp> pq1 = *this;
+				CP::priority_queue<T, Comp> pq2 = other;
+				while (pq1.empty() == false)
+				{
+					if (pq1.top() != pq2.top())
+						return false;
+					pq1.pop();
+					pq2.pop();
+				}
+				return true;
 			}
-			return c;
-		}
-		
 
-		T get_kth(size_t k) const
-		{
-			std::vector<T> v;
-			for (int i = 0; i < 7; ++i)
+			void K_AryfixUp(size_t idx)
 			{
-				if (i < mSize)
-					v.push_back(mData[i]);
+				T tem = mData[idx];
+				int c;
+				while (idx > 0)
+				{
+					c = (idx - 1) / 4;
+					if (mLess(mData[c], tem))
+						mData[idx] = mData[c];
+					else
+						break;
+					idx = c;
+				}
+				mData[idx] = tem;
 			}
-			sort(v.begin(), v.end(), mLess);
-			return v[v.size() - k];
-		}
-	};
 
-}
+			void K_AryfixDown(size_t idx)
+			{
+				T tem = mData[idx];
+				int c;
+				while ((c = (idx * 4) + 1) < mSize)
+				{
+					int p = 0;
+					for (int i = 1; i <= 3; ++i)
+					{
+						if (c + i < mSize)
+						{
+							if (mLess(mData[c + p], mData[c + i]))
+							{
+								p = i;
+							}
+						}
+					}
+					if (c + p < mSize && mLess(tem, mData[c + p]))
+					{
+						mData[idx] = mData[c + p];
+					}
+					else
+						break;
+					idx = c + p;
+				}
+				mData[idx] = tem;
+			}
+
+			void change_value(size_t pos, const T &value)
+			{
+				mData[pos] = value;
+				fixUp(pos);
+				fixDown(pos);
+			}
+
+			size_t get_rank(size_t pos) const
+			{
+				int c = 0;
+				T a = mData[pos];
+				for (int i = 0; i < mSize; ++i)
+				{
+					if (mLess(a, mData[i]))
+						++c;
+				}
+				return c;
+			}
+
+			T get_kth(size_t k) const
+			{
+				std::vector<T> v;
+				for (int i = 0; i < 7; ++i)
+				{
+					if (i < mSize)
+						v.push_back(mData[i]);
+				}
+				sort(v.begin(), v.end(), mLess);
+				return v[v.size() - k];
+			}
+
+			std::vector<T> at_level(size_t k) const
+			{
+				std::vector<T> r;
+				for (int i = 0; i < mSize; ++i)
+				{
+					if ((int)log2(i + 1) == k)
+						r.push_back(mData[i]);
+				}
+				sort(r.rbegin(), r.rend(), mLess);
+				return r;
+			}
+		};
+	}
 
 #endif
