@@ -444,24 +444,24 @@ namespace CP
 		{
 			if (mSize == 1)
 				return mRoot->data.first;
-			int a = abs(get_max_height(mRoot->left) - get_max_height(mRoot->right));
+			int a = 0;
 			node *ans = mRoot;
 			recur(mRoot, a, ans);
 			return ans->data.first;
 		}
 
+		void gen_bst(CP::map_bst<int, int> &bst, int left, int right)
+		{
+			if (left > right)
+				return;
+			int mid = (left + right) / 2;
+			bst[mid] = 0;
+			gen_bst(bst, left, mid - 1);
+			gen_bst(bst, mid + 1, right);
+		}
 		void gen_best_bst(int n, CP::map_bst<int, int> &bst)
 		{
-			int mid = n / 2 + 1;
-			bst[mid] = 0;
-			while (mid > 1)
-			{
-				for (int i = mid / 2; i <= n; i += mid)
-				{
-					bst.insert({i, 0});
-				}
-				mid /= 2;
-			}
+			gen_bst(bst, 1, n);
 		}
 
 		size_t process(node *ptr) const
@@ -515,6 +515,88 @@ namespace CP
 			}
 			mSize = 1;
 			return mRoot->data;
+		}
+		CP::map_bst<KeyT, MappedT, CompareT> split(KeyT val)
+		{
+			CP::map_bst<KeyT, MappedT, CompareT> result;
+			node *p = mRoot;
+			node *lastResult = NULL; 
+			node *lastUs = NULL;	 
+			bool found = false;
+			while (p != NULL && !found)
+			{
+				if (p->data.first >= val)
+				{
+					if (lastResult == NULL)
+					{
+						result.mRoot = p;
+						result.mRoot->parent = NULL;
+					}
+					else
+					{
+						lastResult->left = p;
+						p->parent = lastResult;
+					}
+
+					if (p->data.first == val)
+					{
+						if (lastUs == NULL)
+						{
+							mRoot = p->left;
+							if (mRoot != NULL)
+								mRoot->parent = NULL;
+							lastUs = mRoot;
+						}
+						else
+						{
+							lastUs->right = p->left;
+							if (p->left != NULL)
+								p->left->parent = lastUs;
+						}
+						found = true;
+						p->left = NULL;
+						break;
+					}
+
+					lastResult = p;
+					p = p->left;
+					if (p == NULL)
+					{
+						if (lastUs == NULL)
+						{
+							mRoot = NULL;
+						}
+						else
+						{
+							lastUs->right = NULL;
+						}
+					}
+				}
+				else if (p->data.first < val)
+				{
+					if (lastUs == NULL)
+					{
+						mRoot = p;
+						mRoot->parent = NULL;
+					}
+					else
+					{
+						lastUs->right = p;
+						p->parent = lastUs;
+					}
+					lastUs = p;
+					p = p->right;
+					if (p == NULL)
+					{
+						if (lastResult == NULL)
+							result.mRoot = NULL;
+						else
+							lastResult->left = NULL;
+					}
+				}
+			}
+
+			return result;
 		}
 	};
 
