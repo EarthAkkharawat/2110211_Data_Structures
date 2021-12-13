@@ -138,6 +138,114 @@ namespace CP
 				}
 			}
 		}
+		
+		node *rotate_left_child(node *r)
+		{
+			node *new_root = r->left;
+			r->set_left(new_root->right);
+			new_root->set_right(r);
+			new_root->right->set_height();
+			new_root->set_height();
+			return new_root;
+		}
+		node *rotate_right_child(node *r)
+		{
+			node *new_root = r->right;
+			r->set_right(new_root->left);
+			new_root->set_left(r);
+			new_root->left->set_height();
+			new_root->set_height();
+			return new_root;
+		}
+		
+		node *insert(const ValueT &val, node *r, node *&ptr)
+		{
+			if (r == nullptr)
+			{
+				mSize++;
+				ptr = r = new node(val, nullptr, nullptr, nullptr);
+			}
+			else
+			{
+				int cmp = compare(val.first, r->data.first);
+				if (cmp == 0)
+					ptr = r;
+				else if (cmp < 0)
+				{
+					r->set_left(insert(val, r->left, ptr));
+				}
+				else
+				{
+					r->set_right(insert(val, r->right, ptr));
+				}
+			}
+			r = splay(r);
+			return r;
+		}
+
+		node *erase(const KeyT &key, node *r)
+		{
+			if (r == nullptr)
+				return nullptr;
+			int cmp = compare(key, r->data.first);
+			if (cmp < 0)
+			{
+				r->set_left(erase(key, r->left));
+			}
+			else if (cmp > 0)
+			{
+				r->set_right(erase(key, r->right));
+			}
+			else
+			{
+				if (r->left == nullptr || r->right == nullptr)
+				{
+					node *n = r;
+					r = (r->left == nullptr ? r->right : r->left);
+					delete n;
+					mSize--;
+				}
+				else
+				{
+					node *m = r->right;
+					while (m->left != nullptr)
+						m = m->left;
+					std::swap(r->data.first, m->data.first);
+					std::swap(r->data.second, m->data.second);
+					r->set_right(erase(m->data.first, r->right));
+				}
+			}
+			r = splay(r);
+			return r;
+		}
+
+	public:
+		//-------------- constructor ----------
+		// default constructor
+		Splay_tree(const CompareT &c = CompareT()) : mRoot(nullptr), mLess(c), mSize(0)
+		{
+		}
+
+		~Splay_tree()
+		{
+			clear();
+		}
+
+		node* find(const KeyT &key)
+		{
+			node *parent = nullptr;
+			node *ptr = find_node(key, mRoot, parent);
+			splay(ptr);
+			return ptr == nullptr ? end() : ptr;
+		}
+
+		void clear()
+		{
+			delete_all_nodes(mRoot);
+			mRoot = nullptr;
+			mSize = 0;
+		}
+
 		void insert(int data){
 			node *z = mRoot;
 			node *p = nullptr;
@@ -174,194 +282,6 @@ namespace CP
 				t->parent = sMax;
 			}
 			mSize--;
-		}
-		node *rotate_left_child(node *r)
-		{
-			node *new_root = r->left;
-			r->set_left(new_root->right);
-			new_root->set_right(r);
-			new_root->right->set_height();
-			new_root->set_height();
-			return new_root;
-		}
-		node *rotate_right_child(node *r)
-		{
-			node *new_root = r->right;
-			r->set_right(new_root->left);
-			new_root->set_left(r);
-			new_root->left->set_height();
-			new_root->set_height();
-			return new_root;
-		}
-		node *rebalance(node *r)
-		{
-			if (r == nullptr)
-				return r;
-			int balance = r->balance_value();
-			if (balance == -2)
-			{
-				if (r->left->balance_value() == 1)
-				{
-					r->set_left(rotate_right_child(r->left));
-				}
-				r = rotate_left_child(r);
-			}
-			else if (balance == 2)
-			{
-				if (r->right->balance_value() == -1)
-				{
-					r->set_right(rotate_left_child(r->right));
-				}
-				r = rotate_right_child(r);
-			}
-			r->set_height();
-			return r;
-		}
-		node *insert(const ValueT &val, node *r, node *&ptr)
-		{
-			if (r == nullptr)
-			{
-				mSize++;
-				ptr = r = new node(val, nullptr, nullptr, nullptr);
-			}
-			else
-			{
-				int cmp = compare(val.first, r->data.first);
-				if (cmp == 0)
-					ptr = r;
-				else if (cmp < 0)
-				{
-					r->set_left(insert(val, r->left, ptr));
-				}
-				else
-				{
-					r->set_right(insert(val, r->right, ptr));
-				}
-			}
-			r = rebalance(r);
-			return r;
-		}
-		node *erase(const KeyT &key, node *r)
-		{
-			if (r == nullptr)
-				return nullptr;
-			int cmp = compare(key, r->data.first);
-			if (cmp < 0)
-			{
-				r->set_left(erase(key, r->left));
-			}
-			else if (cmp > 0)
-			{
-				r->set_right(erase(key, r->right));
-			}
-			else
-			{
-				if (r->left == nullptr || r->right == nullptr)
-				{
-					node *n = r;
-					r = (r->left == nullptr ? r->right : r->left);
-					delete n;
-					mSize--;
-				}
-				else
-				{
-					node *m = r->right;
-					while (m->left != nullptr)
-						m = m->left;
-					std::swap(r->data.first, m->data.first);
-					std::swap(r->data.second, m->data.second);
-					r->set_right(erase(m->data.first, r->right));
-				}
-			}
-			r = rebalance(r);
-			return r;
-		}
-
-	public:
-		//-------------- constructor & copy operator ----------
-
-		// copy constructor
-		map_avl(const map_avl<KeyT, MappedT, CompareT> &other) : mLess(other.mLess), mSize(other.mSize)
-		{
-			mRoot = copy(other.mRoot, nullptr);
-		}
-
-		// default constructor
-		map_avl(const CompareT &c = CompareT()) : mRoot(nullptr), mLess(c), mSize(0)
-		{
-		}
-
-		// copy assignment operator using copy-and-swap idiom
-		map_avl<KeyT, MappedT, CompareT> &operator=(map_avl<KeyT, MappedT, CompareT> other)
-		{
-			// other is copy-constructed which will be destruct at the end of this scope
-			// we swap the content of this class to the other class and let it be destructed
-			using std::swap;
-			swap(this->mRoot, other.mRoot);
-			swap(this->mLess, other.mLess);
-			swap(this->mSize, other.mSize);
-			return *this;
-		}
-
-		~map_avl()
-		{
-			clear();
-		}
-
-		bool empty()
-		{
-			return mSize == 0;
-		}
-
-		size_t size()
-		{
-			return mSize;
-		}
-
-		iterator begin()
-		{
-			return iterator(mRoot == nullptr ? nullptr : find_min_node(mRoot));
-		}
-
-		iterator end()
-		{
-			return iterator(nullptr);
-		}
-
-		iterator find(const KeyT &key)
-		{
-			node *parent = nullptr;
-			node *ptr = find_node(key, mRoot, parent);
-			return ptr == nullptr ? end() : iterator(ptr);
-		}
-
-		void clear()
-		{
-			delete_all_nodes(mRoot);
-			mRoot = nullptr;
-			mSize = 0;
-		}
-
-		MappedT &operator[](const KeyT &key)
-		{
-			std::pair<iterator, bool> result = insert(std::make_pair(key, MappedT()));
-			return result.first->second;
-		}
-
-		std::pair<iterator, bool> insert(const ValueT &val)
-		{
-			node *ptr = nullptr;
-			size_t s = mSize;
-			mRoot = insert(val, mRoot, ptr);
-			mRoot->parent = nullptr;
-			return std::make_pair(iterator(ptr), (mSize > s));
-		}
-
-		size_t erase(const KeyT &key)
-		{
-			size_t s = mSize;
-			mRoot = erase(key, mRoot);
-			return s == mSize ? 0 : 1;
 		}
 		//----------------------------------------------------------------
 		void print_node(node *n, size_t depth)
