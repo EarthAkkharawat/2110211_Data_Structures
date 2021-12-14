@@ -31,6 +31,14 @@ namespace CP
 		size_t mSize;
 
 	protected:
+		int compare(const KeyT &k1, const KeyT &k2)
+		{
+			if (mLess(k1, k2))
+				return -1;
+			if (mLess(k2, k1))
+				return +1;
+			return 0;
+		}
 		node *find_node(const T &data, node *r, node *&parent)
 		{
 			if (r == nullptr)
@@ -138,7 +146,7 @@ namespace CP
 				}
 			}
 		}
-		
+
 		node *rotate_left_child(node *r)
 		{
 			node *new_root = r->left;
@@ -157,7 +165,7 @@ namespace CP
 			new_root->set_height();
 			return new_root;
 		}
-		
+
 		node *insert(const ValueT &val, node *r, node *&ptr)
 		{
 			if (r == nullptr)
@@ -231,7 +239,7 @@ namespace CP
 			clear();
 		}
 
-		node* find(const KeyT &key)
+		node *find(const KeyT &key)
 		{
 			node *parent = nullptr;
 			node *ptr = find_node(key, mRoot, parent);
@@ -246,39 +254,52 @@ namespace CP
 			mSize = 0;
 		}
 
-		void insert(int data){
+		void insert(int data)
+		{
 			node *z = mRoot;
 			node *p = nullptr;
-			while (z){
+			while (z)
+			{
 				p = z;
-				if (z->data < data) z = z->right;
-				else z = z->left;
+				if (z->data < data)
+					z = z->right;
+				else
+					z = z->left;
 			}
 			z = new node(data);
 			z->parent = p;
-			if (!p) mRoot = z;
-			else if (p->data < z->data) p->right = z;
-			else p->left = z;
+			if (!p)
+				mRoot = z;
+			else if (p->data < z->data)
+				p->right = z;
+			else
+				p->left = z;
 			splay(z);
 		}
 
-		void erase(const T &data){
+		void erase(const T &data)
+		{
 			node *z = find(data);
-			if (!z) return;
+			if (!z)
+				return;
 			splay(z);
 			node *s = z->left;
 			node *t = z->right;
 			delete z;
 			node *sMax = NULL;
-			if (s){
+			if (s)
+			{
 				s->parent = NULL;
 				sMax = subtree_maximum(s);
 				splay(sMax);
 				mRoot = sMax;
 			}
-			if (t){
-				if (s) sMax->right = t;
-				else mRoot = t;
+			if (t)
+			{
+				if (s)
+					sMax->right = t;
+				else
+					mRoot = t;
 				t->parent = sMax;
 			}
 			mSize--;
@@ -336,21 +357,6 @@ namespace CP
 			if (!checkInorder(r->left))
 				return false;
 			return checkInorder(r->right);
-		}
-		int height(node *r)
-		{
-			if (r == nullptr)
-				return -1;
-			int hl = height(r->left);
-			int hr = height(r->right);
-			return 1 + (hl > hr ? hl : hr);
-		}
-		int height()
-		{
-			if (mRoot == nullptr)
-				return -1;
-			assert(height(mRoot) == mRoot->height);
-			return mRoot->height;
 		}
 	};
 
