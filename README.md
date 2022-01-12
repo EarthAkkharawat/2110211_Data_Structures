@@ -2,7 +2,7 @@
 ### Details
 Data structure as part of 2110211 Data Structure, Academic Year 2021.
 
-IDE used are Visual studio code and CLion.
+IDE used are Visual Studio Code and CLion.
 
 ### Related Topics 
 
