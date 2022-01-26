@@ -1,6 +1,8 @@
-# 2110211_Data_Structure
+# 2110211_Data_Structures
 ### Details
-This repository introduces data structure implementation which is part of 2110211 Data Structure (Computer Engineering), semester 1/2021.
+This repository introduces data structure implementation and many extra member functions (unlike STL) as part of 2110211 Data Structure (Computer Engineering), semester 1/2021.
+
+Created by **Akkharawat Burachokviwat**.
 
 IDE used are Visual Studio Code and CLion.
 
