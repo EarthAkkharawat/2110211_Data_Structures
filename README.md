@@ -1,6 +1,6 @@
 # 2110211_Data_Structure
 ### Details
-Data structure as part of 2110211 Data Structure (Computer Engineering), semester 1/2021.
+This repository introduces data structure implementation which is part of 2110211 Data Structure (Computer Engineering), semester 1/2021.
 
 IDE used are Visual Studio Code and CLion.
 
